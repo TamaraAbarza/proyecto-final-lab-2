@@ -1,0 +1,94 @@
+extends ../layouts/layout.pug
+
+block content
+  .row.justify-content-center
+    .col-md-12
+      .card.shadow
+        .card-header.bg-info.text-white
+          h1.text-center.mb-0 Órdenes Pendientes de Registrar Muestra
+        .card-body.p-4
+          if ordenes.length === 0
+            p.text-center No hay órdenes pendientes.
+          else
+            table.datatable.table.table-striped.table-bordered.w-100
+              thead
+                tr
+                  th ID Orden
+                  th Nombre paciente
+                  th DNI paciente
+                  th Diagnóstico
+                  th Estado
+                  th Acciones
+              tbody
+                each orden in ordenes
+                  tr
+                    td #{orden.id}
+                    td #{orden.paciente.nombre} #{orden.paciente.apellido}
+                    td #{orden.paciente.dni}
+                    td #{orden.diagnostico}
+                    td #{orden.estado}
+                    td
+                      a.btn.btn-sm.btn-success(href=`/muestra/${orden.id}/crear`) Registrar Muestra
+                      a.btn.btn-sm.btn-primary.ml-2(
+                        data-toggle="modal",
+                        data-target="#orderDetailModal",
+                        data-id=orden.id
+                      ) Ver Detalles
+
+  // Modal para ver detalles de la orden
+  div.modal.fade#orderDetailModal(tabindex="-1", role="dialog", aria-labelledby="orderDetailModalLabel", aria-hidden="true")
+    div.modal-dialog(role="document")
+      div.modal-content
+        div.modal-header
+          h5.modal-title#orderDetailModalLabel Detalles de la Orden
+          button.close(type="button", data-dismiss="modal", aria-label="Close")
+            span(aria-hidden="true") &times;
+        div.modal-body
+          p Cargando detalles...
+        div.modal-footer
+          button.btn.btn-secondary(type="button", data-dismiss="modal") Cerrar
+
+  // Segunda tabla para mostrar las muestras registradas
+  .card.mt-5
+    .card-header.bg-info.text-white
+      h3.text-center.mb-0 Muestras Registradas
+    .card-body.p-4
+      if muestras.length === 0
+        p.text-center No hay muestras registradas.
+      else
+        table.datatable.table.table-striped.table-bordered.w-100
+          thead
+            tr
+              th ID Muestra
+              th ID Orden
+              th Examen ID
+              th Estado
+              th Acción
+          tbody
+            each muestra in muestras
+              tr
+                td #{muestra.id}
+                td #{muestra.ordenExamen.ordenTrabajo.id}
+                td #{muestra.ordenExamen.examenId}
+                td #{muestra.estado}
+                td
+                  if muestra.estado !== 'procesada'
+                    form(action=`/muestra/${muestra.id}/procesar`, method="POST")
+                      button.btn.btn-sm.btn-success(type="submit") Marcar como procesada
+                  a.btn.btn-sm.btn-warning.ml-2(href=`/muestra/${muestra.id}/reimprimir`) Reimprimir Etiqueta
+
+block scripts
+  // Script para cargar los detalles de la orden en el modal
+  script.
+    $('#orderDetailModal').on('show.bs.modal', function (event) {
+      var button = $(event.relatedTarget); // Botón que disparó el modal
+      var orderId = button.data('id'); // Extraer info de data-id
+      var modal = $(this);
+      // Aquí puedes agregar una petición AJAX para obtener más detalles de la orden.
+      // Por ahora se muestra el ID de la orden:
+      modal.find('.modal-body').html('<p>Detalles de la orden con ID: ' + orderId + '</p>');
+    });
+
+    
+
+

@@ -1,0 +1,22 @@
+extends ../layouts/layout.pug
+
+block content
+  .container.mt-4
+    h1= title
+    if error
+      .alert.alert-danger= error
+    form(method='post', action=action)
+      .mb-3
+        label.form-label(for='nombreExamen') Nombre Examen
+        input.form-control(type='text', name='nombreExamen', id='nombreExamen', value=examen.nombreExamen || '')
+      .mb-3
+        label.form-label(for='codigo') Código
+        input.form-control(type='text', name='codigo', id='codigo', value=examen.codigo || '')
+      .mb-3
+        label.form-label(for='tipoMuestra') Tipo Muestra
+        input.form-control(type='text', name='tipoMuestra', id='tipoMuestra', value=examen.tipoMuestra || '')
+      .mb-3
+        label.form-label(for='diasEstimadosResultados') Días Estimados Resultados
+        input.form-control(type='number', name='diasEstimadosResultados', id='diasEstimadosResultados', value=examen.diasEstimadosResultados || '')
+      button.btn.btn-primary(type='submit')= btnText
+      a.btn.btn-secondary(href='/home') Cancelar

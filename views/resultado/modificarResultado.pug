@@ -1,0 +1,81 @@
+extends ../layouts/layout
+
+block content
+  .container.mt-5
+    h2.mb-4 Modificar Resultado para: #{datos.examen.nombreExamen}
+    p 
+      | Orden: 
+      strong #{datos.ordenTrabajo.id}
+      |  |  Paciente: 
+      strong #{datos.ordenTrabajo.paciente.nombre} #{datos.ordenTrabajo.paciente.apellido}
+
+    if alerta
+      .alert.alert-warning
+        strong Atención:
+        |  Algunos valores están fuera de rango. Puedes corregirlos o forzar el registro.
+
+    form(method="POST", action=`/examen/${datos.ordenTrabajo.id}/${datos.examen.id}/preinforme/actualizar`)
+      input(type="hidden", name="ordenId", value=datos.ordenTrabajo.id)
+      input(type="hidden", name="muestraId", value=datos.muestra.id)
+
+      table.table.table-bordered
+        thead
+          tr
+            th Determinación
+            th Unidad de Medida
+            th Valor Final
+            th Rangos de Referencia
+        tbody
+          each det in determinaciones
+            tr(data-id=det.id)
+              td #{det.nombre}
+              td #{det.unidadMedida}
+              td
+                input.form-control(
+                  type="number", 
+                  step="0.01", 
+                  name=`det_${det.id}`, 
+                  id=`det_${det.id}`, 
+                  value=det.valorFinal || '',
+                  required
+                )
+              td
+                if det.valorMin != null && det.valorMax != null
+                  | #{det.valorMin} – #{det.valorMax}
+                else
+                  | N/A
+
+      .mt-3
+        button.btn.btn-warning(type="submit") Modificar Resultado
+        a.btn.btn-secondary.ms-2(href=`/orden/${datos.ordenTrabajo.id}/detalle`) Cancelar
+
+  script.
+    const form = document.querySelector('form');
+    form.addEventListener('submit', function(e) {
+      const fuera = [];
+      document.querySelectorAll('tbody tr').forEach(row => {
+        const input = row.querySelector('input[type="number"]');
+        const val = parseFloat(input.value);
+        const txt = row.querySelector('td:nth-child(4)').innerText;
+        const parts = txt.split('–').map(s => parseFloat(s.trim()));
+        if (parts.length === 2 && !isNaN(val)) {
+          const [min, max] = parts;
+          if (val < min || val > max) fuera.push(row.dataset.id);
+        }
+      });
+      if (fuera.length) {
+        const ok = confirm('Hay valores fuera de rango. ¿Deseas continuar y forzar el registro?');
+        if (!ok) {
+          e.preventDefault();
+        } else {
+          const inp = document.createElement('input');
+          inp.type = 'hidden';
+          inp.name = 'forzar';
+          inp.value = '1';
+          form.appendChild(inp);
+        }
+      }
+    });
+
+
+

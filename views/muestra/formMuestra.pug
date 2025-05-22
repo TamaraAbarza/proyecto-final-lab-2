@@ -1,0 +1,75 @@
+extends ../layouts/layout.pug
+
+block content
+  .container.mt-5
+    .row.justify-content-center
+      .col-md-10
+        .card.shadow
+          .card-header.bg-primary.text-white
+            h1.text-center.mb-0 Registrar Muestra
+          .card-body.p-4
+            h2.mb-4 Información de la Orden
+            .row.mb-3
+              .col-auto
+                strong ID:
+                span.text-muted.ms-1 #{orden.id}
+              .col-auto
+                strong Paciente:
+                span.text-muted.ms-1 
+                  if orden.paciente.nombre
+                    | #{orden.paciente.nombre} #{orden.paciente.apellido}
+                  else if orden.paciente.usuario
+                    | #{orden.paciente.usuario.nombre} #{orden.paciente.usuario.apellido}
+              .col-auto
+                strong Fecha de Creación:
+                span.text-muted.ms-1 #{new Date(orden.fechaCreacion).toLocaleString()}
+
+            h3.mb-4 Registrar Nueva Muestra
+
+            - const examenesSinMuestra = orden.ordenesExamenes.filter(oe => !oe.muestra)
+
+            if examenesSinMuestra.length === 0
+              .alert.alert-info No hay exámenes pendientes de muestra.
+            else
+              form(method='POST', action=`/muestra/${orden.id}/crear`)
+                input(type='hidden', name='ordenId', value=orden.id)
+                input(type='hidden', name='pacienteId', value=orden.paciente.id)
+
+                .mb-3
+                  label.form-label(for='examenId') Examen sin muestra
+                  select.form-select(name='examenId', required, onchange='actualizarTipoMuestra()')
+                    option(value='') -- Selecciona un examen --
+                    each examen in examenesSinMuestra
+                      option(value=examen.id data-tipo=examen.examen.tipoMuestra)
+                        | #{examen.examen.nombreExamen} (#{examen.examen.tipoMuestra})
+
+                input(type='hidden', name='tipoMuestra', id='tipoMuestra')
+
+                .mb-3
+                  label.form-label(for='fechaRecepcion') Fecha y Hora de Recepción
+                  input.form-control#fechaRecepcion(type='datetime-local', name='fechaRecepcion', required)
+
+                button.btn.btn-primary.mt-3(type='submit') Registrar Muestra
+
+  script.
+    function actualizarTipoMuestra() {
+      const select = document.querySelector("select[name='examenId']");
+      const tipo = select.options[select.selectedIndex].getAttribute("data-tipo");
+      document.getElementById("tipoMuestra").value = tipo || "";
+    }
+
+    document.addEventListener("DOMContentLoaded", function() {
+      var fechaRecepcionInput = document.getElementById("fechaRecepcion");
+      if (!fechaRecepcionInput.value) {
+        var now = new Date();
+        var year = now.getFullYear();
+        var month = ("0" + (now.getMonth() + 1)).slice(-2);
+        var day = ("0" + now.getDate()).slice(-2);
+        var hours = ("0" + now.getHours()).slice(-2);
+        var minutes = ("0" + now.getMinutes()).slice(-2);
+        var currentDateTime = `${year}-${month}-${day}T${hours}:${minutes}`;
+        fechaRecepcionInput.value = currentDateTime;
+      }
+    });
+
+

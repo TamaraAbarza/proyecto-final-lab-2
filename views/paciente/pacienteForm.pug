@@ -1,0 +1,55 @@
+extends ../layouts/layout.pug
+
+block content
+  .container.mt-5
+    .row.justify-content-center
+      .col-md-10
+        .card
+          .card-header
+            h2.text-center= isEditMode ? 'Editar Paciente' : 'Registrar Paciente'
+          .card-body
+            if error
+              .alert.alert-danger #{error}
+            form(method="POST", action=isEditMode ? `/paciente/${paciente.id}?_method=PUT` : "/paciente")
+              .row
+                .col-md-6
+                  .mb-3
+                    label.form-label(for="nombre") Nombre:
+                    input.form-control(type="text", name="nombre", value=isEditMode ? paciente.nombre : '', required)
+                  .mb-3
+                    label.form-label(for="dni") DNI:
+                    input.form-control(type="text", name="dni", value=isEditMode ? paciente.dni : dni, required)
+                  .mb-3
+                    label.form-label(for="correo") Correo electrónico:
+                    input.form-control(type="email", name="correo", value=isEditMode ? paciente.usuario.correo : '', required)
+                  .mb-3
+                    label.form-label(for="genero") Género:
+                    select.form-select(name="genero")
+                      option(value="M", selected=isEditMode ? paciente.genero === 'M' : false) Masculino
+                      option(value="F", selected=isEditMode ? paciente.genero === 'F' : false) Femenino
+                  .mb-3
+                    label.form-label(for="direccion") Dirección:
+                    input.form-control(type="text", name="direccion", value=isEditMode ? paciente.direccion : '')
+                .col-md-6
+                  .mb-3
+                    label.form-label(for="apellido") Apellido:
+                    input.form-control(type="text", name="apellido", value=isEditMode ? paciente.apellido : '', required)
+                  .mb-3
+                    label.form-label(for="fechaNacimiento") Fecha de nacimiento:
+                    - var fecha = ''
+                    - if (isEditMode && paciente.fechaNacimiento) {
+                    -   fecha = new Date(paciente.fechaNacimiento).toISOString().split('T')[0]
+                    - }
+                    input.form-control(type="date", name="fechaNacimiento", value=fecha, required)
+                  .mb-3
+                    label.form-label(for="telefono") Teléfono:
+                    input.form-control(type="text", name="telefono", value=isEditMode ? paciente.telefono : '')
+                  .mb-3
+                    label.form-label(for="embarazo") Embarazo (si corresponde):
+                    select.form-select(name="embarazo")
+                      option(value="false", selected=isEditMode ? paciente.embarazo === false : false) No
+                      option(value="true", selected=isEditMode ? paciente.embarazo === true : false) Sí
+              .d-grid.gap-2.col-6.mx-auto.mb-3
+                button.btn.btn-primary(type="submit")= isEditMode ? 'Actualizar Paciente' : 'Registrar Paciente'
+          .card-footer
+            a.btn.btn-secondary(href="/") Volver a Inicio

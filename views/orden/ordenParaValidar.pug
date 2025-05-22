@@ -1,0 +1,67 @@
+extends ../layouts/layout.pug
+
+block content
+  .container.mt-5
+    h1.mb-4 Resultados de la Orden ##{orden.id}
+    p
+      | Paciente: 
+      strong #{orden.paciente.apellido}, #{orden.paciente.nombre}
+      |  |  Edad: 
+      strong #{edadPaciente} años
+      |  |  Género: 
+      strong #{orden.paciente.genero}
+
+    p 
+      | Diagnóstico: 
+      strong #{orden.diagnostico} 
+
+    - const grouped = {}
+    each r in resultados
+      - if (!grouped[r.examenId]) grouped[r.examenId] = { nombre: r.nombreExamen, items: [] }
+      - grouped[r.examenId].items.push(r)
+    - const examIds = Object.keys(grouped)
+
+    each id in examIds
+      - const exam = grouped[id]
+      .card.mb-4.shadow-sm.rounded-2xl
+        .card-body
+          h2.card-title.mb-3 #{exam.nombre}
+          table.table.table-hover.align-middle
+            thead.table-light
+              tr
+                th Determinación
+                th Valor
+                th Valores de Referencia
+                th Estado
+            tbody
+              each item in exam.items
+                tr(class=item.fueraDeRango ? 'table-danger' : '')
+                  td #{item.nombreDeterminacion}
+                  td #{item.valorFinal != null ? item.valorFinal : 'N/A'} #{item.unidadMedida}
+                  td
+                    if item.valorReferenciaMinimo != null && item.valorReferenciaMaximo != null
+                      | #{item.valorReferenciaMinimo} - #{item.valorReferenciaMaximo} #{item.unidadMedida}
+                    else
+                      | N/A
+                  td
+                    if item.fueraDeRango
+                      span.badge.bg-danger.text-white Fuera de rango
+                    else
+                      span.badge.bg-success.text-white Dentro de rango
+
+    .d-flex.justify-content-center.mt-5
+      if editar
+        form(action=`/examen/${orden.id}/validar?validar=false`, method='POST')
+          button.btn.btn-lg.btn-warning.m-2(type='submit') Cancelar Validación
+      else
+        form(action=`/examen/${orden.id}/validar?validar=true`, method='POST')
+          button.btn.btn-lg.btn-success.m-2(type='submit') Validar Orden
+        form(action=`/examen/${orden.id}/validar?validar=false`, method='POST')
+          button.btn.btn-lg.btn-danger.m-2(type='submit') Orden No Válida
+
+
+
+
+
+
+

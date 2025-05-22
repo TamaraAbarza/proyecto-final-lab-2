@@ -1,0 +1,23 @@
+extends ../layouts/layout.pug
+block content
+  .container.mt-4
+    h1= title
+    if error
+      .alert.alert-danger= error
+    form(method='post', action=action)
+      .mb-3
+        label.form-label(for='nombreDeterminacion') Nombre Determinación
+        input.form-control(type='text', name='nombreDeterminacion', id='nombreDeterminacion', value=determinacion.nombreDeterminacion || '')
+      
+      .mb-3
+        label.form-label(for='unidadMedida') Unidad de Medida
+        input.form-control(type='text', name='unidadMedida', id='unidadMedida', value=determinacion.unidadMedida || '')
+
+      .mb-3
+        label.form-label(for='examenId') Examen
+        select.form-select(name='examenId', id='examenId')
+          each ex in examenes
+            option(value=ex.id selected=(determinacion.examenId==ex.id))= ex.nombreExamen
+
+      button.btn.btn-primary(type='submit')= btnText
+      a.btn.btn-secondary(href='/home') Cancelar

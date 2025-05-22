@@ -1,0 +1,106 @@
+extends ../layouts/layout.pug
+
+block content
+  .container.mt-5
+    // Notificaciones generales
+    if notifications && notifications.success
+      .alert.alert-success(role="alert") #{notifications.success}
+    if notifications && notifications.error
+      .alert.alert-danger(role="alert") #{notifications.error}
+    // Lista de errores específicos
+    if errors && errors.length
+      ul.list-group.mb-3
+        each err in errors
+          li.list-group-item.list-group-item-danger #{err.msg}
+
+    .row.justify-content-center
+      .col-md-8
+        .card.shadow
+          .card-header.bg-primary.text-white
+            h2.text-center Editar Usuario
+          .card-body
+            form.needs-validation(method="POST", action="/usuario/actualizar/" + usuario.id + "?_method=PUT", novalidate)
+              input(type="hidden", name="_method", value="PUT")
+              
+              // Datos generales
+              h4 Datos Generales
+              
+              // Nombre de Usuario
+              .mb-3
+                label.form-label(for="nombreUsuario") Nombre de Usuario
+                input#nombreUsuario.form-control(
+                  name="nombreUsuario",
+                  type="text",
+                  value=usuario.nombreUsuario,
+                  required,
+                  class=(errors && errors.find(e => e.param === 'nombreUsuario') ? 'is-invalid' : '')
+                )
+                .invalid-feedback
+                  | Ingresa un nombre de usuario válido.
+              
+              // Correo Electrónico
+              .mb-3
+                label.form-label(for="correo") Correo Electrónico
+                input#correo.form-control(
+                  name="correo",
+                  type="email",
+                  value=usuario.correo,
+                  required,
+                  class=(errors && errors.find(e => e.param === 'correo') ? 'is-invalid' : '')
+                )
+                .invalid-feedback
+                  | Ingresa un correo electrónico válido.
+              
+              // Rol
+              .mb-3
+                label.form-label(for="rol") Rol
+                select#rol.form-control(
+                  name="rol",
+                  required,
+                  class=(errors && errors.find(e => e.param === 'rol') ? 'is-invalid' : '')
+                )
+                  option(value="administrativo", selected=usuario.rol==='administrativo') Administrativo
+                  option(value="técnico", selected=usuario.rol==='técnico') Técnico
+                  option(value="bioquímico", selected=usuario.rol==='bioquímico') Bioquímico
+                  option(value="paciente", selected=usuario.rol==='paciente') Paciente
+                .invalid-feedback
+                  | Selecciona un rol válido.
+              
+              hr
+
+              // Cambio de contraseña (opcional)
+              h4.mt-4 Cambiar Contraseña (opcional)
+              
+              .mb-3
+                label.form-label(for="nuevaPassword") Nueva Contraseña
+                input#nuevaPassword.form-control(
+                  type="password",
+                  name="nuevaPassword",
+                  placeholder="Nueva contraseña",
+                  minlength="6",
+                  class=(errors && errors.find(e => e.param === 'nuevaPassword') ? 'is-invalid' : '')
+                )
+                .invalid-feedback
+                  | La nueva contraseña debe tener al menos 6 caracteres.
+                .form-text.text-muted Al menos 6 caracteres (si deseas cambiarla)
+              
+              .d-flex.justify-content-center
+                button.btn.btn-success.mt-3(type="submit") Guardar Cambios
+
+  // Script para validación del formulario
+  script.
+    (function() {
+      'use strict';
+      window.addEventListener('load', function() {
+        var forms = document.getElementsByClassName('needs-validation');
+        Array.prototype.filter.call(forms, function(form) {
+          form.addEventListener('submit', function(event) {
+            if (form.checkValidity() === false) {
+              event.preventDefault();
+              event.stopPropagation();
+            }
+            form.classList.add('was-validated');
+          }, false);
+        });
+      }, false);
+    })();

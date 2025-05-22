@@ -1,0 +1,17 @@
+extends ../layouts/layout.pug
+
+block content
+  .container.mt-5
+    .row.justify-content-center
+      .col-md-8
+        .card
+          .card-header
+            h2.text-center Confirmación
+          .card-body
+            p.lead.text-center #{mensaje}
+            if usuarioId
+              p.text-center ID del Usuario: #{usuarioId}
+            if pacienteId
+              p.text-center ID del Paciente: #{pacienteId}
+              .d-grid.gap-2.col-6.mx-auto.mt-4
+                a.btn.btn-success(href= pacienteId ? `/orden/crear/${pacienteId}` : "/orden/crear") Continuar a la creación de la orden

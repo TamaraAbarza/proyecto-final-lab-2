@@ -1,0 +1,46 @@
+extends ../layouts/layout_empleado.pug
+
+block content
+  h2 Bienvenido, Empleado
+
+  .row
+    .col-md-4
+      .card
+        .card-header Recepción de Muestras
+        .card-body
+          a.btn.btn-primary(href="/paciente/busqueda") Registrar Muestra
+    .col-md-4
+      .card
+        .card-header Analítica
+        .card-body
+          a.btn.btn-primary(href="/orden/lista") Registrar Resultados
+    .col-md-4
+      .card
+        .card-header Validación
+        .card-body
+          a.btn.btn-primary(href="/orden/validacion/lista") Validar Resultados
+
+  .mt-4
+    h3 Órdenes de Trabajo
+    table.table
+      thead
+        tr
+          th Orden #
+          th Paciente
+          th Estado
+          th Acción
+      tbody
+        if ordenes && ordenes.length > 0
+          each orden in ordenes
+            tr
+              td #{orden.id || 'No disponible'}
+              td #{orden.paciente || 'No disponible'}
+              td #{orden.estado || 'No disponible'}
+              td
+                if orden.id
+                  a.btn.btn-sm.btn-info(href="/orden/#{orden.id}") Ver Detalles
+                else
+                  span No disponible
+        else
+          tr
+            td(colspan="4") No hay órdenes de trabajo disponibles.

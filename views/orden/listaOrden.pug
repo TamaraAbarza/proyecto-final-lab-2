@@ -1,0 +1,65 @@
+extends ../layouts/layout.pug
+
+block content
+  .row.justify-content-center
+    .col-md-12
+      .card.shadow
+        .card-header.bg-info.text-white
+          h1.text-center.mb-0 Lista de órdenes
+        .card-body.p-4
+          if ordenes.length === 0
+            p.text-center No hay historial de órdenes.
+          else
+            table.datatable.table.table-striped.table-bordered.w-100#historialTable
+              thead
+                tr
+                  th Nº Orden
+                  th Paciente
+                  th DNI
+                  th Diagnóstico
+                  th Estado
+                  th Fecha/Hora
+                  th Exámenes
+                  th Acciones
+              tbody
+                each orden in ordenes
+                  tr
+                    td #{orden.id}
+                    td #{orden.paciente ? orden.paciente.nombre + " " + orden.paciente.apellido : 'Sin datos'}
+                    td #{orden.paciente && orden.paciente.dni ? orden.paciente.dni : 'No disponible'}
+                    td #{orden.diagnostico ? orden.diagnostico.substring(0, 50) + (orden.diagnostico.length > 50 ? '...' : '') : 'Sin diagnóstico'}
+                    td #{orden.estado}
+                    td #{new Date(orden.fechaCreacion).toLocaleString()}
+                    td
+                      ul
+                        each oe in orden.ordenesExamenes
+                          li
+                            | #{oe.examen ? oe.examen.nombreExamen : 'Sin datos'}
+                            if oe.muestra
+                              |  - Muestra registrada
+                            else
+                              |  - Sin muestra
+                    td
+                      if orden.estado === 'esperando toma de muestra' || orden.estado === 'analítica'
+                        a.btn.btn-sm.btn-outline-primary(href=`/orden/${orden.id}/actualizar`) Modificar
+                        form.d-inline(action=`/orden/${orden.id}?_method=DELETE`, method='POST')
+                          button.btn.btn-sm.btn-outline-danger(type='submit', onclick="return confirm('¿Eliminar orden?')") Eliminar
+                      else if orden.estado === 'informada'
+                        a.btn.btn-sm.btn-outline-success(href=`/examen/${orden.id}/informe`) Descargar Informe
+                      else
+                        span.text-muted No disponible
+
+                        block scripts
+  script(src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js")
+  script.
+    $(document).ready(function () {
+      $('.datatable').DataTable({
+        language: {
+          url: '//cdn.datatables.net/plug-ins/1.13.6/i18n/es-ES.json'
+        }
+      });
+    });
+
+
+
+

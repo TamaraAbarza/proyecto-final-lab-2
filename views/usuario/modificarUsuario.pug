@@ -1,0 +1,106 @@
+extends ../layouts/layout.pug
+
+block content
+  .container.mt-5
+    // Notificaciones generales
+    if notifications && notifications.success
+      .alert.alert-success(role="alert") #{notifications.success}
+    if notifications && notifications.error
+      .alert.alert-danger(role="alert") #{notifications.error}
+    // Lista de errores específicos
+    if errors && errors.length
+      ul.list-group.mb-3
+        each err in errors
+          li.list-group-item.list-group-item-danger #{err.msg}
+
+    .row.justify-content-center
+      .col-md-8
+        .card.shadow
+          .card-header.bg-info.text-white
+            h2.text-center Mi Perfil
+          .card-body
+            // Se asume que la ruta es /usuario/perfil y se envía vía POST
+            form.needs-validation(method="POST", action="/usuario/perfil", novalidate)
+              .mb-3
+                label.form-label(for="correo") Correo Electrónico
+                input#correo.form-control(
+                  type="email", 
+                  name="correo", 
+                  value=usuario.correo, 
+                  required
+                )
+                .invalid-feedback
+                  | Ingresa un email válido.
+              hr.my-3
+              h5.mt-4 Cambiar Contraseña
+              .mb-2
+                label.form-label(for="passwordActual") Contraseña Actual
+                input#passwordActual.form-control(
+                  type="password", 
+                  name="passwordActual", 
+                  placeholder="Contraseña actual", 
+                  required
+                )
+                .invalid-feedback
+                  | Ingresa tu contraseña actual.
+              .mb-2
+                label.form-label(for="nuevaPassword") Nueva Contraseña
+                input#nuevaPassword.form-control(
+                  type="password", 
+                  name="nuevaPassword", 
+                  placeholder="Nueva contraseña", 
+                  minlength="6"
+                )
+                .invalid-feedback
+                  | La nueva contraseña debe tener al menos 6 caracteres.
+              .mb-3
+                label.form-label(for="repetirNuevaPassword") Repetir Contraseña
+                input#repetirNuevaPassword.form-control(
+                  type="password", 
+                  name="repetirNuevaPassword", 
+                  placeholder="Repetir contraseña", 
+                  minlength="6"
+                )
+                .invalid-feedback
+                  | Las contraseñas no coinciden.
+              .d-flex.justify-content-center
+                button.btn.btn-primary(type="submit") Guardar Cambios
+
+  // Script para validación en tiempo real de contraseñas y validación general del formulario
+  script.
+    (function() {
+      'use strict';
+      window.addEventListener('load', function() {
+        var forms = document.getElementsByClassName('needs-validation');
+        Array.prototype.filter.call(forms, function(form) {
+          // Función para validar en tiempo real que las contraseñas coincidan
+          var validatePasswords = function() {
+            var nuevaPass = form.querySelector('[name="nuevaPassword"]').value;
+            var repetirPassField = form.querySelector('[name="repetirNuevaPassword"]');
+            var repetirPass = repetirPassField.value;
+            if (nuevaPass !== "" && nuevaPass !== repetirPass) {
+              repetirPassField.setCustomValidity('Las contraseñas no coinciden');
+            } else {
+              repetirPassField.setCustomValidity('');
+            }
+          };
+
+          // Agregar eventos 'input' en ambos campos de contraseña
+          var nuevaPassField = form.querySelector('[name="nuevaPassword"]');
+          var repetirPassField = form.querySelector('[name="repetirNuevaPassword"]');
+          nuevaPassField.addEventListener('input', validatePasswords);
+          repetirPassField.addEventListener('input', validatePasswords);
+
+          form.addEventListener('submit', function(event) {
+            validatePasswords();
+            if (form.checkValidity() === false) {
+              event.preventDefault();
+              event.stopPropagation();
+            }
+            form.classList.add('was-validated');
+          }, false);
+        });
+      }, false);
+    })();
+
+

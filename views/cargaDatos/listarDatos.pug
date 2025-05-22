@@ -1,0 +1,95 @@
+extends ../layouts/layout.pug
+
+block content
+  .container.mt-5
+    h1= title
+
+    // Barra de acción para crear nuevos registros
+    .mb-4
+      .d-flex.justify-content-start
+        a.btn.btn-success.me-3(href='/examen/crear') Crear Examen
+        a.btn.btn-primary.me-3(href='/determinacion/crear') Crear Determinación
+        a.btn.btn-info(href='/valor_referencia/crear') Crear Valor Referencia
+
+    // Exámenes
+    .row.mb-4
+      .col-12
+        h2.mb-3.text-primary Exámenes
+        .table-responsive
+          table.table.table-striped.table-bordered.table-hover.datatable
+            thead.table-light
+              tr
+                th ID
+                th Nombre
+                th Código
+                th Días Estimados
+                th Acciones
+            tbody
+              each e in examenes
+                tr
+                  td= e.id
+                  td= e.nombreExamen
+                  td= e.codigo
+                  td= e.diasEstimadosResultados
+                  td
+                    .d-flex.justify-content-start
+                      a.btn.btn-sm.btn-warning.me-3(href=`/examen/actualizar/${e.id}`) Editar
+                      form.d-inline(method='post', action=`/examen/eliminar/${e.id}`)
+                        button.btn.btn-sm.btn-danger.me-3(type='submit') Eliminar
+
+    // Determinaciones
+    .row.mb-4
+      .col-12
+        h2.mb-3.text-success Determinaciones
+        .table-responsive
+          table.table.table-striped.table-bordered.table-hover.datatable
+            thead.table-light
+              tr
+                th ID
+                th Nombre
+                th Examen
+                th Acciones
+            tbody
+              each d in determinaciones
+                tr
+                  td= d.id
+                  td= d.nombreDeterminacion
+                  td= d.examen ? d.examen.nombreExamen : 'Sin examen'
+                  td
+                    .d-flex.justify-content-start
+                      a.btn.btn-sm.btn-warning.me-3(href=`/determinacion/actualizar/${d.id}`) Editar
+                      form.d-inline(method='post', action=`/determinacion/eliminar/${d.id}`)
+                        button.btn.btn-sm.btn-danger.me-3(type='submit') Eliminar
+
+    // Valores de Referencia
+    .row.mb-4
+      .col-12
+        h2.mb-3.text-info Valores de Referencia
+        .table-responsive
+          table.table.table-striped.table-bordered.table-hover.datatable
+            thead.table-light
+              tr
+                th ID
+                th Determinación
+                th Rango
+                th Acciones
+            tbody
+              each v in valoresReferencia
+                tr
+                  td= v.id
+                  td= v.determinacion ? v.determinacion.nombreDeterminacion : 'Sin determinación'
+                  td= `${v.edadMinima}-${v.edadMaxima} ${v.genero}`
+                  td
+                    .d-flex.justify-content-start
+                      a.btn.btn-sm.btn-warning.me-3(href=`/valor_referencia/actualizar/${v.id}`) Editar
+                      form.d-inline(method='post', action=`/valor_referencia/eliminar/${v.id}`)
+                        button.btn.btn-sm.btn-danger.me-3(type='submit') Eliminar
+
+    // Espaciado adicional
+    .row.mt-4
+      .col-12
+        p.text-center.text-muted
+          | Todos los derechos reservados © 2025
+
+
+

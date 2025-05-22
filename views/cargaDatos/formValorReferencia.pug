@@ -1,0 +1,38 @@
+extends ../layouts/layout.pug
+block content
+  .container.mt-4
+    h1= title
+    if error
+      .alert.alert-danger= error
+    form(method='post', action=action)
+      .mb-3
+        label.form-label(for='determinacionId') Determinación
+        select.form-select(name='determinacionId', id='determinacionId')
+          each d in determinaciones
+            option(value=d.id selected=(valor.determinacionId==d.id))= d.nombreDeterminacion
+      .row
+        .col
+          .mb-3
+            label.form-label(for='edadMinima') Edad Mínima
+            input.form-control(type='number', name='edadMinima', id='edadMinima', value=valor.edadMinima || '')
+        .col
+          .mb-3
+            label.form-label(for='edadMaxima') Edad Máxima
+            input.form-control(type='number', name='edadMaxima', id='edadMaxima', value=valor.edadMaxima || '')
+      .mb-3
+        label.form-label(for='genero') Género
+        select.form-select(name='genero', id='genero')
+          option(value=null selected=(valor.genero==null)) Ambos
+          option(value='F' selected=(valor.genero=='F')) F
+          option(value='M' selected=(valor.genero=='M')) M
+      .row
+        .col
+          .mb-3
+            label.form-label(for='valorReferenciaMinimo') Valor Mínimo
+            input.form-control(type='number' step='0.01', name='valorReferenciaMinimo', id='valorReferenciaMinimo', value=valor.valorReferenciaMinimo || '')
+        .col
+          .mb-3
+            label.form-label(for='valorReferenciaMaximo') Valor Máximo
+            input.form-control(type='number' step='0.01', name='valorReferenciaMaximo', id='valorReferenciaMaximo', value=valor.valorReferenciaMaximo || '')
+      button.btn.btn-primary(type='submit')= btnText
+      a.btn.btn-secondary(href='/home') Cancelar

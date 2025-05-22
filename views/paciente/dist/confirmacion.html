@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema de Información de Laboratorio | </title>
+    <!-- CSS: Bootstrap y Select2-->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css">
+    <!-- Iconos y estilos propios-->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="/css/style.css">
+  </head>
+  <body>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light"><a class="navbar-brand" href="/">LIS</a>
+      <ul class="navbar-nav ml-auto">
+        <li class="nav-item"><a class="nav-link" href="/auth/login/paciente">Portal Paciente</a></li>
+        <li class="nav-item"><a class="nav-link" href="/auth/login/empleado">Portal Empleado</a></li>
+      </ul>
+    </nav>
+    <div class="container mt-4">
+      <div class="container mt-5">
+        <div class="row justify-content-center">
+          <div class="col-md-8">
+            <div class="card">
+              <div class="card-header">
+                <h2 class="text-center">Confirmación</h2>
+              </div>
+              <div class="card-body">
+                <p class="lead text-center"></p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- JS: jQuery, Bootstrap, Select2, DataTables si aplicas-->
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    <script src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
+    <!-- Inicializaciones comunes-->
+    <script>
+      $(document).ready(function(){
+        // Select2 para todos los selects con clase .select2
+        $('.select2').select2({
+          width: '100%',
+          placeholder: 'Seleccione exámenes'
+        });
+      
+        // DataTables (opcional)
+        $('.datatable').DataTable({
+          paging: true,
+          pageLength: 5,
+          lengthMenu: [[5,10,25,50,-1],[5,10,25,50,"Todos"]],
+          ordering: true,
+          searching: true,
+          info: true,
+          language: {
+            sProcessing:    "Procesando...",
+            sLengthMenu:    "Mostrar _MENU_ registros",
+            sZeroRecords:   "No se encontraron resultados",
+            sEmptyTable:    "Ningún dato disponible en esta tabla",
+            sInfo:          "Mostrando _START_ al _END_ de _TOTAL_ registros",
+            sInfoEmpty:     "Mostrando 0 al 0 de 0 registros",
+            sInfoFiltered:  "(filtrado de _MAX_ registros)",
+            sSearch:        "Buscar:",
+            oPaginate: {
+              sFirst:    "Primero",
+              sLast:     "Último",
+              sNext:     "Siguiente",
+              sPrevious: "Anterior"
+            }
+          }
+        });
+      });
+      
+    </script>
+  </body>
+</html>

@@ -1,0 +1,32 @@
+extends ../layouts/layout.pug
+
+block content
+  .row.justify-content-center
+    .col-md-12
+      .card.shadow
+        .card-header.bg-info.text-white
+          h1.text-center.mb-0 Historial de órdenes
+        .card-body.p-4
+          if historial.length === 0
+            p.text-center No hay historial de órdenes.
+          else
+            table.datatable.table.table-striped.table-bordered.w-100#historialTable
+              thead
+                tr
+                  th Nº Orden
+                  th Paciente
+                  th Estado Nuevo
+                  th Observación
+                  th Usuario
+                  th Fecha/Hora
+              tbody
+                each item in historial
+                  tr
+                    td #{item.ordenTrabajo.id}
+                    td #{item.ordenTrabajo.paciente ? item.ordenTrabajo.paciente.nombre + " " + item.ordenTrabajo.paciente.apellido : 'Sin datos'}
+                    td #{item.estadoNuevo}
+                    td #{item.descripcion}
+                    td #{item.usuario ? item.usuario.nombreUsuario : 'Sin datos'}
+                    td #{new Date(item.createdAt).toLocaleString()}
+
+block scripts

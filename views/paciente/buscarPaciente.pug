@@ -1,0 +1,18 @@
+extends ../layouts/layout.pug
+
+block content
+  .container.mt-5
+    .row.justify-content-center
+      .col-md-6
+        .card
+          .card-header
+            h2.text-center Buscar Paciente por DNI
+          .card-body
+            form(method="GET", action="/paciente/")
+              .mb-3
+                label.form-label(for="dni") Ingrese DNI:
+                input.form-control(type="text", name="dni", required)
+              .d-grid
+                button.btn.btn-primary(type="submit") Buscar
+          .card-footer.text-center
+            a.btn.btn-secondary(href="/usuario/home") Volver a Inicio

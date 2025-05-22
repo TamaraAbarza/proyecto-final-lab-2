@@ -1,0 +1,78 @@
+extends ../layouts/layout.pug
+
+block content
+  .row.justify-content-center
+    .col-md-12
+      .card.shadow
+        .card-header.bg-info.text-white
+          h1.text-center.mb-0 
+            | #{estado === 'pre informe' ? 'Listado de órdenes - Pre Informe' : 'Listado de órdenes - Para Validar'} 
+        .card-body.p-4
+          if orders.length === 0
+            p.text-center No se encontraron órdenes disponibles para el estado "Pre informe".
+          else
+            table.datatable.table.table-striped.table-bordered.w-100
+              thead
+                tr
+                  th ID Orden
+                  th Paciente
+                  th Diagnóstico
+                  th Estado
+                  th Fecha Programada
+                  th Acciones
+              tbody
+                each orden in orders
+                  tr
+                    td #{orden.id}
+                    td #{orden.paciente.nombre} #{orden.paciente.apellido}
+                    td #{orden.diagnostico}
+                    td #{orden.estado}
+                    td #{orden.fechaEntrega ? new Date(orden.fechaEntrega).toLocaleDateString() : 'Sin fecha'}
+                    td 
+                      if estado === 'pre informe'
+                        a.btn.btn-sm.btn-primary(href=`/orden/${orden.id}/detalle?action=registrar`) Cargar Resultados
+                      else
+                        a.btn.btn-sm.btn-warning(href=`/examen/${orden.id}/validar`) Validar Resultados
+
+        //- Segunda tabla para las órdenes para validar
+        .card-header.bg-warning.text-white.mt-4
+          h1.text-center.mb-0 
+            | #{estado === 'pre informe' ? 'Listado de órdenes - Para Validar' : 'Listado de órdenes - Validadas'}
+        .card-body.p-4
+          if ordersParaValidar && ordersParaValidar.length === 0
+            p.text-center No se encontraron órdenes disponibles para el estado "Para Validar".
+          else
+            if ordersParaValidar && ordersParaValidar.length > 0
+              table.datatable.table.table-striped.table-bordered.w-100
+                thead
+                  tr
+                    th ID Orden
+                    th Paciente
+                    th Diagnóstico
+                    th Estado
+                    th Fecha Programada
+                    th Acciones
+                tbody
+                  each orden in ordersParaValidar
+                    tr
+                      td #{orden.id}
+                      td #{orden.paciente.nombre} #{orden.paciente.apellido}
+                      td #{orden.diagnostico}
+                      td #{orden.estado}
+                      td #{orden.fechaEntrega ? new Date(orden.fechaEntrega).toLocaleDateString() : 'Sin fecha'}
+                      td
+                        // Modificar URL del botón "Modificar" según el estado
+                        if estado === 'pre informe'
+                          a.btn.btn-sm.btn-warning(href=`/orden/${orden.id}/detalle?action=modificar`) Modificar
+                        else
+                          a.btn.btn-sm.btn-warning(href=`/examen/${orden.id}/actualizar`) Modificar
+
+                        // Solo mostrar el botón "Eliminar" si el estado es "pre informe"
+                        if orden.estado === 'pre informe'
+                          form.d-inline(method='post', action=`/orden/${orden.id}/eliminar`)
+                            button.btn.btn-sm.btn-danger(type='submit') Eliminar
+            else
+              p.text-center No hay órdenes para validar en este momento.
+
+
+

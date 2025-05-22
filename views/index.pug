@@ -1,0 +1,46 @@
+extends ./layouts/layout.pug
+
+block content
+  // Sección de bienvenida
+  .jumbotron.text-center.bg-primary.text-white.py-5
+    h1.display-4.bolder Bienvenido al Sistema de Información de Laboratorio
+    p.lead.mb-4 Gestiona de manera eficiente los análisis clínicos para diagnósticos precisos.
+    a.btn.btn-light.btn-lg(href="/auth/login/paciente") Acceder al portal Paciente
+
+  // Sección de columnas con iconos y texto
+  .row.mt-5
+    .col-md-4.mb-4
+      .card.shadow-lg.border-light.rounded-lg
+        .card-body.text-center
+          i.fas.fa-flask.fa-4x.text-primary.mb-3
+          h4.card-title.font-weight-bold Recepción de Muestras
+          p.card-text
+            | Registro y etiquetado de muestras, verificación de identidad y gestión de órdenes.
+        .card-footer.bg-light.text-muted.text-center
+          | ¿Quieres saber más sobre la recepción de muestras? Contáctanos.
+
+    .col-md-4.mb-4
+      .card.shadow-lg.border-light.rounded-lg
+        .card-body.text-center
+          i.fas.fa-chart-line.fa-4x.text-success.mb-3
+          h4.card-title.font-weight-bold Analítica y Resultados
+          p.card-text
+            | Preparación de muestras, análisis, registro de resultados y validación.
+        .card-footer.bg-light.text-muted.text-center
+          | Obtén resultados precisos y rápidos para un diagnóstico certero.
+
+    .col-md-4.mb-4
+      .card.shadow-lg.border-light.rounded-lg
+        .card-body.text-center
+          i.fas.fa-user-md.fa-4x.text-info.mb-3
+          h4.card-title.font-weight-bold Portal del Paciente
+          p.card-text
+            | Acceso seguro a resultados de estudios y gestión de información personal.
+        .card-footer.bg-light.text-muted.text-center
+          | Tu salud siempre a un clic de distancia.
+
+  // Espaciado adicional
+  .row.mt-4
+    .col-12
+      p.text-center.text-muted
+        | Todos los derechos reservados © 2025

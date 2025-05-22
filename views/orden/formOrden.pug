@@ -1,0 +1,85 @@
+extends ../layouts/layout.pug
+
+block content
+  h1
+    if orden
+      | Editar Orden de Trabajo para el Paciente #{orden.pacienteId}
+    else
+      | Crear Orden de Trabajo para el Paciente #{pacienteId}
+
+  form(
+    action= orden
+      ? `/orden/${orden.id}/actualizar`
+      : "/orden/crear",
+    method="POST"
+  )
+    if orden
+      input(type="hidden" name="_method" value="PUT")
+
+    input(type="hidden" name="pacienteId" value=pacienteId)
+    if orden
+      input(type="hidden" name="ordenId" value=orden.id)
+
+    .form-group
+      label(for="diagnostico") Diagnóstico
+      textarea#diagnostico.form-control(
+        name="diagnostico"
+        required
+      )= (orden && orden.diagnostico) || ''
+
+    .form-group
+      label(for="fechaCreacion") Fecha de Creación y Hora
+      input#fechaCreacion.form-control(
+        type="datetime-local"
+        name="fechaCreacion"
+        required
+        value=(orden ? orden.fechaCreacion.toISOString().slice(0,16) : '') 
+      )
+
+    .form-group
+      label(for="observaciones") Observaciones (opcional)
+      textarea#observaciones.form-control(
+        name="observaciones"
+      )= (orden && orden.observaciones) || ''
+
+    h2 Exámenes a Realizar
+
+    each examen in examenes
+      .mb-3
+        .form-check
+          input.form-check-input(
+            type="checkbox"
+            name="examenesSeleccionados[]"
+            id=`examen-${examen.id}`
+            value=examen.id
+            checked=(examenesSeleccionados && examenesSeleccionados.includes(examen.id))
+          )
+          label.form-check-label(for=`examen-${examen.id}`)= examen.nombreExamen
+
+        .form-check.ms-4
+          input.form-check-input(
+            type="checkbox"
+            name="muestrasTraidas[]"
+            id=`muestra-${examen.id}`
+            value=examen.id
+            checked=(muestrasTraidas && muestrasTraidas.includes(examen.id))
+          )
+          label.form-check-label(for=`muestra-${examen.id}`) Muestra Traída
+
+    button.btn.btn-primary(type="submit")
+      = orden ? 'Actualizar Orden' : 'Crear Orden'
+
+  script.
+    document.addEventListener("DOMContentLoaded", function() {
+      var fechaCreacionInput = document.getElementById("fechaCreacion");
+      if (!fechaCreacionInput.value) {
+        var now = new Date();
+        var year = now.getFullYear();
+        var month = ("0" + (now.getMonth() + 1)).slice(-2);
+        var day = ("0" + now.getDate()).slice(-2);
+        var hours = ("0" + now.getHours()).slice(-2);
+        var minutes = ("0" + now.getMinutes()).slice(-2);
+        var currentDateTime = `${year}-${month}-${day}T${hours}:${minutes}`;
+        fechaCreacionInput.value = currentDateTime;
+      }
+    });

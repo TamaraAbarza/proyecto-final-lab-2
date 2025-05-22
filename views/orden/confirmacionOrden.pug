@@ -1,0 +1,55 @@
+extends ../layouts/layout.pug
+
+block content
+  .container.mt-5
+    .row.justify-content-center
+      .col-md-8
+        .card.shadow
+          .card-header.bg-success.text-white
+            if tipoRegistro === 'muestra'
+              h1.text-center.mb-0 Muestra Registrada
+            else
+              h1.text-center.mb-0 Orden Creada
+          .card-body.p-4
+            .alert.alert-success(role="alert")
+              if tipoRegistro === 'muestra'
+                p.mb-0 La muestra para la orden con ID #{orden.id} se ha creado correctamente.
+              else
+                p.mb-0 La orden con ID #{orden.id} se ha creado correctamente.
+            .mb-3
+              strong Diagnóstico:
+              span.text-muted #{orden.diagnostico}
+            .mb-3
+              strong Estado:
+              span.text-muted #{orden.estado}
+            if orden.fechaProgramadaResultados
+              .mb-3
+                strong Fecha Estimada de Resultados:
+                span.text-muted #{orden.fechaProgramadaResultados.toLocaleDateString()}
+            if orden.observaciones
+              .mb-3
+                strong Observaciones:
+                span.text-muted #{orden.observaciones}
+            h2.mt-4 Detalles del Paciente
+            if orden.paciente
+              .mb-3
+                strong Nombre:
+                span.text-muted #{orden.paciente.nombre} #{orden.paciente.apellido}
+              .mb-3
+                strong DNI:
+                span.text-muted #{orden.paciente.dni}
+              .mb-3
+                strong Fecha de Nacimiento:
+                span.text-muted #{new Date(orden.paciente.fechaNacimiento).toLocaleString()}
+            else
+              p.text-danger No se encontró información del paciente.
+            if notifications && notifications.length
+              h2.mt-4 Notificaciones
+              ul.list-group.mb-3
+                each nota in notifications
+                  li.list-group-item #{nota}
+            if tipoRegistro === 'muestra'
+              a.btn.btn-primary.mt-2(href='/muestra/' + orden.id + '/etiqueta') Imprimir Etiqueta
+            else
+              p.mt-4 La muestra está pendiente de registro.
+            a.btn.btn-secondary.mt-2(href='/orden/pendientes/muestras') Ver órdenes pendientes de muestra

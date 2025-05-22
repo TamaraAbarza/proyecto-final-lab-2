@@ -1,0 +1,69 @@
+extends ../layouts/layout.pug
+
+block content
+  .row.justify-content-center
+    .col-md-12
+      .card.shadow
+        .card-header.bg-info.text-white
+          h1.text-center.mb-0 Lista de Usuarios
+        .card-body.p-4
+          .d-flex.justify-content-end.mb-3
+            a.btn.btn-success.btn-sm(href="/usuario/crear") Crear Usuario
+          if usuarios.length === 0
+            p.text-center No hay usuarios registrados.
+          else
+            table.datatable.table.table-striped.table-bordered.w-100#usuariosTable
+              thead
+                tr
+                  th ID
+                  th Nombre de Usuario
+                  th Correo
+                  th Rol
+                  th Estado
+                  th Acciones
+              tbody
+                each usuario in usuarios
+                  tr
+                    td #{usuario.id}
+                    td #{usuario.nombreUsuario}
+                    td #{usuario.correo}
+                    td #{usuario.rol}
+                    td #{usuario.estado ? 'Activo' : 'Inactivo'}
+                    td
+                      a.btn.btn-primary.btn-sm(href=`/usuario/actualizar/${usuario.id}`) Modificar
+                      button.btn.btn-danger.btn-sm(data-id=usuario.id, data-toggle="modal", data-target="#eliminarModal") Eliminar
+
+  // Modal para eliminar usuario
+  .modal.fade#eliminarModal(tabindex="-1", role="dialog", aria-labelledby="eliminarModalLabel", aria-hidden="true")
+    .modal-dialog(role="document")
+      .modal-content
+        .modal-header
+          h5.modal-title#eliminarModalLabel Confirmar Eliminación
+          button.close(type="button", data-dismiss="modal", aria-label="Close")
+            span(aria-hidden="true") &times;
+        .modal-body
+          p ¿Estás seguro de que deseas eliminar este usuario?
+        .modal-footer
+          button.btn.btn-secondary(type="button", data-dismiss="modal") Cancelar
+          button.btn.btn-danger#confirmarEliminar(type="button") Eliminar
+
+block scripts
+  script.
+    $('#eliminarModal').on('show.bs.modal', function (event) {
+      var button = $(event.relatedTarget);
+      var userId = button.data('id');
+      $('#confirmarEliminar').click(function() {
+        $.ajax({
+          url: '/usuario/' + userId,
+          method: 'DELETE',
+          success: function(data) {
+            window.location.reload(); // Recargar la página para actualizar la tabla
+          },
+          error: function(xhr, status, error) {
+            console.error("Error al eliminar el usuario:", status, error);
+            alert("Error al eliminar el usuario.");
+          }
+        });
+        $('#eliminarModal').modal('hide');
+      });
+    });

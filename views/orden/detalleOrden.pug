@@ -1,0 +1,73 @@
+extends ../layouts/layout
+
+block content
+  .container.mt-5
+    .card.shadow-lg.rounded
+      .card-header.bg-primary.text-white.d-flex.justify-content-between.align-items-center
+        h3.mb-0 Orden de Trabajo # #{orden.id}
+        span.badge.bg-light.text-dark Estado: #{orden.estado}
+
+      .card-body
+        // Información del paciente
+        h5.text-secondary.mb-3 Datos del Paciente
+        ul.list-group.mb-4
+          li.list-group-item
+            strong Nombre: 
+            | #{orden.paciente.nombre} #{orden.paciente.apellido}
+          li.list-group-item
+            strong DNI: 
+            | #{orden.paciente.dni}
+          li.list-group-item
+            strong Fecha de Nacimiento: 
+            | #{orden.paciente.fechaNacimiento.toLocaleDateString()}
+          li.list-group-item
+            strong Observaciones: 
+            | #{orden.observaciones || 'N/A'}
+          li.list-group-item
+            strong Diagnóstico: 
+            | #{orden.diagnostico || 'Sin diagnóstico registrado'}
+
+        // Lista de Exámenes
+        h5.text-secondary.mb-3 Exámenes Solicitados
+        each ordenExamen in orden.ordenesExamenes
+          .card.mb-3.border-0.shadow-sm
+            .card-body
+              h5.card-title.text-primary #{ordenExamen.examen.nombreExamen}
+              p.card-text
+                | Tipo de muestra: 
+                b #{ordenExamen.examen.tipoMuestra}
+
+              if ordenExamen.muestra
+                p.card-text
+                  | Muestra recibida el: 
+                  b #{new Date(ordenExamen.muestra.fechaRecepcion).toLocaleDateString()}
+                  | – Estado: 
+                  span.badge.bg-info.text-dark #{ordenExamen.muestra.estado}
+              else
+                p.text-muted No hay muestra registrada para este examen.
+
+              // Determinaciones del examen
+              if ordenExamen.examen.determinaciones.length
+                h6.mt-3.text-muted Determinaciones:
+                ul.list-group.mb-3
+                  each det of ordenExamen.examen.determinaciones
+                    li.list-group-item.d-flex.justify-content-between.align-items-center
+                      | #{det.nombreDeterminacion}
+                      span.badge.bg-secondary #{det.unidadMedida}
+              else
+                p.text-muted No hay determinaciones asociadas a este examen.
+
+              if action === 'modificar'
+                a.btn.btn-primary.mt-3(href=`/examen/${orden.id}/${ordenExamen.examen.id}/preinforme/actualizar`)
+                  i.fas.fa-pen-alt.me-2
+                  | Modificar resultado
+              else
+                a.btn.btn-success.mt-3(href=`/examen/${orden.id}/${ordenExamen.examen.id}/preinforme`)
+                  i.fas.fa-pen-alt.me-2
+                  | Registrar resultado
+
+    // Botón de volver
+    .mt-4
+      a.btn.btn-outline-secondary(href="/ordenes")
+        i.fas.fa-arrow-left.me-2
+        | Volver a órdenes

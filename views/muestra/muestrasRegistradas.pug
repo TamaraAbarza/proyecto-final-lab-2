@@ -1,0 +1,51 @@
+extends ../layouts/layout.pug
+
+block content
+  .container.mt-5
+    .row.justify-content-center
+      .col-md-10
+        .card.shadow
+          .card-header.bg-primary.text-white
+            h1.text-center.mb-0 Muestras Registradas
+          .card-body.p-4
+            h2.mb-4 Información de la Orden
+            .row.mb-3
+              .col-auto
+                strong ID:
+                span.text-muted.ms-1 #{orden.id}
+              .col-auto
+                strong Paciente:
+                span.text-muted.ms-1 
+                  if orden.paciente.nombre
+                    | #{orden.paciente.nombre} #{orden.paciente.apellido}
+                  else if orden.paciente.usuario
+                    | #{orden.paciente.usuario.nombre} #{orden.paciente.usuario.apellido}
+              .col-auto
+                strong Fecha de Creación:
+                span.text-muted.ms-1 #{new Date(orden.fechaCreacion).toLocaleString()}
+
+            h3.mb-4 Muestras Registradas
+
+            - if muestras.length === 0
+              .alert.alert-info No hay muestras registradas para esta orden.
+            else
+              table.table.table-striped
+                thead
+                  tr
+                    th Examen
+                    th Fecha de Recepción
+                    th Tipo de Muestra
+                    th Acciones
+                tbody
+                  each muestra in muestras
+                    tr
+                      td #{muestra.examen.nombreExamen}
+                      td #{new Date(muestra.fechaRecepcion).toLocaleString()}
+                      td #{muestra.tipoMuestra}
+                      td
+                        a.btn.btn-primary.btn-sm(href=`/muestra/${muestra.id}/reimprimir`) Reimprimir Etiqueta
+
+  script.
+    document.addEventListener("DOMContentLoaded", function() {
+      // Aquí puedes agregar cualquier funcionalidad extra si lo necesitas.
+    });

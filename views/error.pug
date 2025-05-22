@@ -1,0 +1,13 @@
+extends ./layouts/layout.pug
+
+block content
+  .container.d-flex.align-items-center.justify-content-center.min-vh-100
+    .row.w-100
+      .col-md-8.offset-md-2
+        .card.shadow-lg.border-0
+          .card-body.text-center
+            i.bi.bi-exclamation-triangle-fill.text-danger.display-3.mb-3
+            h1.text-danger Ocurrió un error
+            p.text-muted.mt-3 Algo salió mal. Por favor, intentá nuevamente o volvé al inicio.
+            a.btn.btn-primary.mt-4(href="/") Ir a la página principal
+

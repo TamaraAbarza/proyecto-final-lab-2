@@ -1,0 +1,62 @@
+extends ../layouts/layout.pug
+
+block content
+  .row.justify-content-center
+    .col-md-8
+      .card.shadow
+        .card-header.bg-info.text-white
+          h1.text-center.mb-0 Crear Nuevo Usuario
+        .card-body.p-4
+          // Notificaciones generales
+          if notifications && notifications.success
+            .alert.alert-success(role="alert") #{notifications.success}
+          if notifications && notifications.error
+            .alert.alert-danger(role="alert") #{notifications.error}
+          // Mensajes locales
+          if mensajeExito
+            .alert.alert-success.text-center #{mensajeExito}
+          else if mensajeError
+            .alert.alert-danger.text-center #{mensajeError}
+          form.needs-validation(action="/usuario/crear", method="POST", novalidate)
+            .form-group
+              label(for="nombreUsuario") Nombre de Usuario:
+              input.form-control#nombreUsuario(type="text", name="nombreUsuario", required)
+              .invalid-feedback
+                | Ingresa un nombre de usuario válido.
+            .form-group
+              label(for="correo") Correo:
+              input.form-control#correo(type="email", name="correo", required)
+              .invalid-feedback
+                | Ingresa un correo válido.
+            .form-group
+              label(for="password") Contraseña:
+              input.form-control#password(type="password", name="password", required)
+              .invalid-feedback
+                | Ingresa una contraseña válida.
+            .form-group
+              label(for="rol") Rol:
+              select.form-control#rol(name="rol", required)
+                option(value="administrativo") Administrativo
+                option(value="técnico") Técnico
+                option(value="bioquímico") Bioquímico
+              .invalid-feedback
+                | Selecciona un rol.
+            button.btn.btn-primary(type="submit") Crear Usuario
+
+  // Script para validación general del formulario
+  script.
+    (function() {
+      'use strict';
+      window.addEventListener('load', function() {
+        var forms = document.getElementsByClassName('needs-validation');
+        Array.prototype.filter.call(forms, function(form) {
+          form.addEventListener('submit', function(event) {
+            if (form.checkValidity() === false) {
+              event.preventDefault();
+              event.stopPropagation();
+            }
+            form.classList.add('was-validated');
+          }, false);
+        });
+      }, false);
+    })();

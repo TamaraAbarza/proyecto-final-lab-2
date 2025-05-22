@@ -1,0 +1,71 @@
+extends ../layouts/layout
+
+block content
+  .container.mt-5
+    h2.mb-4 Registrar Resultado para: #{datos.examen.nombreExamen}
+    p 
+      | Orden: 
+      strong #{datos.ordenTrabajo.id}
+      |  |  Paciente: 
+      strong #{datos.ordenTrabajo.paciente.nombre} #{datos.ordenTrabajo.paciente.apellido}
+
+    if alerta
+      .alert.alert-warning
+        strong Atención:
+        |  Algunos valores están fuera de rango. Puedes corregirlos o forzar el registro.
+
+    form(method="POST", action=`/examen/${datos.examen.id}/preinforme?forzar=1`)
+      input(type="hidden" name="ordenId", value=datos.ordenTrabajo.id)
+      input(type="hidden" name="muestraId", value=datos.muestra.id)
+
+      table.table.table-bordered
+        thead
+          tr
+            th Determinación
+            th Valor
+            th Unidad de Medida
+            th Rangos de Referencia
+        tbody
+          each det in determinaciones
+            tr(data-id=det.id)
+              td #{det.nombre}
+              td
+                input.form-control(
+                  type="number", 
+                  step="0.01", 
+                  name=`det_${det.id}`, 
+                  id=`det_${det.id}`, 
+                  required
+                )
+              td #{det.unidadMedida}
+              td
+                if det.valorMin != null && det.valorMax != null
+                  | #{det.valorMin} – #{det.valorMax} #{det.unidadMedida}
+                else
+                  | N/A
+
+      .mt-3
+        button.btn.btn-success(type="submit") Guardar Resultado
+        a.btn.btn-secondary.ms-2(href=`/orden/${datos.ordenTrabajo.id}/detalle`) Cancelar
+
+  //– Validación en cliente: si hay algún valor fuera de su rango, pide confirmación
+  script.
+    document.querySelector('form').addEventListener('submit', function(e) {
+      const fuera = [];
+      document.querySelectorAll('tbody tr').forEach(row => {
+        const id = row.dataset.id;
+        const input = row.querySelector('input');
+        const val = parseFloat(input.value);
+        const txt = row.querySelector('td:nth-child(4)').innerText;
+        const parts = txt.split('–').map(s => parseFloat(s.trim()));
+        if (parts.length === 2 && !isNaN(val)) {
+          const [min, max] = parts;
+          if (val < min || val > max) fuera.push(id);
+        }
+      });
+      if (fuera.length && !confirm('Hay valores fuera de rango. ¿Deseas continuar y forzar el registro?')) {
+        e.preventDefault();
+      }
+    });
+
+

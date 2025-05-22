@@ -1,0 +1,79 @@
+extends ../layouts/layout.pug
+
+block content
+  .container.mt-5
+    h1.text-center.mb-3 Home
+    // Datos del paciente
+    .card.mb-5.shadow
+      .card-header.bg-primary.text-white
+        h4.mb-0 Datos del Paciente
+      .card-body
+        dl.row
+          dt.col-sm-3 Nombre
+          dd.col-sm-9 #{paciente.nombre} #{paciente.apellido}
+
+          dt.col-sm-3 DNI
+          dd.col-sm-9 #{paciente.dni}
+
+          dt.col-sm-3 Teléfono
+          dd.col-sm-9 #{paciente.telefono}
+
+          dt.col-sm-3 Dirección
+          dd.col-sm-9 #{paciente.direccion}
+
+    // Órdenes del paciente
+    if ordenes.length
+      .card.shadow
+        .card-header.bg-success.text-white
+          h4.mb-0 Órdenes de Trabajo
+        .card-body.p-0
+          table.table.table-hover.mb-0
+            thead.table-light
+              tr
+                th Diagnóstico
+                th Estado
+                th Exámenes
+                th.text-center(style="width: 160px") Informe
+            tbody
+              each orden in ordenes
+                tr
+                  td #{orden.diagnostico}
+                  td
+                    span.badge(
+                      class=(orden.estado === 'completo' ? 'bg-success' : 
+                             orden.estado === 'pendiente' ? 'bg-warning text-dark' : 
+                             orden.estado === 'informada' ? 'bg-info text-dark' :
+                             'bg-secondary')
+                    ) #{orden.estado}
+                  td
+                    if orden.ordenesExamenes && orden.ordenesExamenes.length
+                      ul.mb-0.ps-3
+                        each oe in orden.ordenesExamenes
+                          li
+                            | #{oe.examen ? oe.examen.nombreExamen : 'Sin datos'}
+                            if oe.muestra
+                              |  – Muestra
+                            else
+                              |  – Sin muestra
+                    else
+                      span.text-muted No hay exámenes
+                  td.text-center
+                    if orden.estado === 'informada'
+                      a.btn.btn-sm.btn-outline-primary(href=`/examen/${orden.id}/informe`, target="_blank")
+                        i.bi.bi-file-earmark-arrow-down.me-1
+                        | Descargar
+                    else
+                      span.text-muted No disponible
+    else
+      .alert.alert-info.mt-4.text-center
+        | No hay órdenes disponibles por el momento.
+
+
+
+
+
+
+
+
+
+

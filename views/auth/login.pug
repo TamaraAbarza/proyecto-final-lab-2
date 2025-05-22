@@ -1,0 +1,14 @@
+extends ../layouts/layout_no_logueado.pug
+
+block content
+  .row.justify-content-center
+    .col-md-6
+      h2 Portal del #{rol}
+      form(action="/auth/login", method="post")
+        .form-group
+          label(for="correo") Correo Electrónico
+          input.form-control(type="email", name="correo", id="correo", required)
+        .form-group
+          label(for="password") Contraseña
+          input.form-control(type="password", name="password", id="password", required)
+        button.btn.btn-primary(type="submit") Iniciar Sesión
