@@ -1,0 +1,12 @@
+PORT = 3000
+DB_PORT = 3306
+DB_HOST=localhost
+DB_USER=root
+DB_PASS=
+DB_NAME=bd_lab2
+DB_DIALECT=mysql
+JWT_SECRET=mi_secreto#clave secreta con la que se firma el token,
+JWT_EXPIRATION=1h# 1 hora
+EMAIL_USER=tamaraabarza01@gmail.com
+EMAIL_PASS=ljpa zxzs qikg meoi
+CLIENT_URL=http://localhost:4200
