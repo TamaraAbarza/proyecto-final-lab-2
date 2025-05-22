@@ -1,0 +1,17 @@
+Usuarios
+
+Admin: 
+abarzatamara6@gmail.com
+123456
+
+Técnico 
+tecnico@gmail.com
+tecnico123
+
+bioquimico
+bioquimico@gmail.com
+bioquimico123
+
+recepcio
+recepcion@gmail.com
+recepcion123
